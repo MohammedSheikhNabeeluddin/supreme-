@@ -1,23 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import { store } from "@/lib/store";
-import { Product } from "@/lib/mock-data";
+import { useState, useEffect } from "react";
+import { getProducts, addProduct, updateProduct, deleteProduct, getCategories, seed } from "@/lib/actions-client";
 import {
   Plus,
   Search,
   Edit2,
   Trash2,
-  MoreVertical,
   X,
-  Upload,
-  Save
+  Save,
+  Loader2
 } from "lucide-react";
 
 export default function AdminProductsPage() {
-  const [products, setProducts] = useState(store.getProducts());
+  const [products, setProducts] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingProduct, setEditingProduct] = useState<any | null>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -26,12 +26,29 @@ export default function AdminProductsPage() {
     price: "",
     discount: "",
     stock: "",
-    categoryId: "1",
+    categoryId: "",
     imageUrl: ""
   });
 
-  const handleEdit = (product: Product) => {
+  const loadData = async () => {
+    setLoading(true);
+    await seed(); // Ensure data exists for demo
+    const [p, c] = await Promise.all([getProducts(), getCategories()]);
+    setProducts(p);
+    setCategories(c);
+    if (c.length > 0 && !formData.categoryId) {
+      setFormData(prev => ({ ...prev, categoryId: c[0].id }));
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const handleEdit = (product: any) => {
     setEditingProduct(product);
+    const images = JSON.parse(product.images);
     setFormData({
       name: product.name,
       description: product.description,
@@ -39,49 +56,48 @@ export default function AdminProductsPage() {
       discount: (product.discount || "").toString(),
       stock: product.stock.toString(),
       categoryId: product.categoryId,
-      imageUrl: product.images[0]
+      imageUrl: images[0] || ""
     });
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this product?")) {
-      store.deleteProduct(id);
-      setProducts([...store.getProducts()]);
+      await deleteProduct(id);
+      loadData();
     }
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     const productData = {
       name: formData.name,
       description: formData.description,
       price: parseFloat(formData.price),
-      discount: formData.discount ? parseFloat(formData.discount) : undefined,
+      discount: formData.discount ? parseFloat(formData.discount) : null,
       stock: parseInt(formData.stock),
       categoryId: formData.categoryId,
       images: [formData.imageUrl || "https://images.unsplash.com/photo-1544640808-32ca72ac7f67?w=400"]
     };
 
     if (editingProduct) {
-      store.updateProduct(editingProduct.id, productData);
+      await updateProduct(editingProduct.id, productData);
     } else {
-      store.addProduct(productData);
+      await addProduct(productData);
     }
 
-    setProducts([...store.getProducts()]);
     setIsModalOpen(false);
     setEditingProduct(null);
-    setFormData({
-      name: "",
-      description: "",
-      price: "",
-      discount: "",
-      stock: "",
-      categoryId: "1",
-      imageUrl: ""
-    });
+    loadData();
   };
+
+  if (loading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -103,7 +119,7 @@ export default function AdminProductsPage() {
               price: "",
               discount: "",
               stock: "",
-              categoryId: "1",
+              categoryId: categories[0]?.id || "",
               imageUrl: ""
             });
             setIsModalOpen(true);
@@ -127,47 +143,50 @@ export default function AdminProductsPage() {
             </tr>
           </thead>
           <tbody className="divide-y text-sm">
-            {products.map((product) => (
-              <tr key={product.id} className="hover:bg-gray-50 transition-colors">
-                <td className="p-4">
-                  <div className="flex items-center gap-3">
-                    <img src={product.images[0]} alt="" className="h-10 w-10 rounded border object-cover" />
-                    <div>
-                      <p className="font-medium text-gray-900">{product.name}</p>
-                      <p className="text-xs text-gray-500 line-clamp-1">{product.description}</p>
+            {products.map((product) => {
+              const images = JSON.parse(product.images);
+              return (
+                <tr key={product.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="p-4">
+                    <div className="flex items-center gap-3">
+                      <img src={images[0]} alt="" className="h-10 w-10 rounded border object-cover" />
+                      <div>
+                        <p className="font-medium text-gray-900">{product.name}</p>
+                        <p className="text-xs text-gray-500 line-clamp-1">{product.description}</p>
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td className="p-4 text-gray-600">
-                  {store.getCategories().find(c => c.id === product.categoryId)?.name}
-                </td>
-                <td className="p-4 font-medium text-gray-900">${product.price.toFixed(2)}</td>
-                <td className="p-4">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    product.stock > 10 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                  }`}>
-                    {product.stock} in stock
-                  </span>
-                </td>
-                <td className="p-4 text-gray-600">{product.discount ? `${product.discount}%` : "-"}</td>
-                <td className="p-4">
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => handleEdit(product)}
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded"
-                    >
-                      <Edit2 size={16} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(product.id)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td className="p-4 text-gray-600">
+                    {categories.find(c => c.id === product.categoryId)?.name}
+                  </td>
+                  <td className="p-4 font-medium text-gray-900">${product.price.toFixed(2)}</td>
+                  <td className="p-4">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      product.stock > 10 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                    }`}>
+                      {product.stock} in stock
+                    </span>
+                  </td>
+                  <td className="p-4 text-gray-600">{product.discount ? `${product.discount}%` : "-"}</td>
+                  <td className="p-4">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleEdit(product)}
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded"
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(product.id)}
+                        className="p-2 text-red-600 hover:bg-red-50 rounded"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -203,7 +222,7 @@ export default function AdminProductsPage() {
                     onChange={(e) => setFormData({...formData, categoryId: e.target.value})}
                     className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                   >
-                    {store.getCategories().map(cat => (
+                    {categories.map(cat => (
                       <option key={cat.id} value={cat.id}>{cat.name}</option>
                     ))}
                   </select>

@@ -34,6 +34,7 @@ export default function CartPage() {
             <div className="divide-y">
               {items.map((item) => {
                 const product = item.product;
+                const images = JSON.parse(product.images);
                 const hasDiscount = product.discount && product.discount > 0;
                 const price = hasDiscount
                   ? product.price * (1 - product.discount! / 100)
@@ -43,7 +44,7 @@ export default function CartPage() {
                   <div key={product.id} className="flex flex-col py-6 md:flex-row md:items-start">
                     <Link href={`/product/${product.id}`} className="mb-4 h-44 w-44 flex-shrink-0 md:mb-0">
                       <img
-                        src={product.images[0]}
+                        src={images[0]}
                         alt={product.name}
                         className="h-full w-full object-contain"
                       />

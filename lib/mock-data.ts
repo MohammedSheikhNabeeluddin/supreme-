@@ -10,7 +10,7 @@ export type Product = {
   price: number;
   discount?: number;
   stock: number;
-  images: string[];
+  images: any; // String in DB, array in memory
   categoryId: string;
 };
 

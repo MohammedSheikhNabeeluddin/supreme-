@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { store } from "@/lib/store";
+import { getOrders, updateOrderStatus, seed } from "@/lib/actions-client";
 import { Order } from "@/lib/mock-data";
 import {
   Search,
@@ -15,27 +15,21 @@ import {
 } from "lucide-react";
 
 export default function AdminOrdersPage() {
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
+
+  const loadOrders = async () => {
+    await seed();
+    const o = await getOrders();
+    setOrders(o);
+  };
 
   useEffect(() => {
-    // Seed an order if none exist for demo
-    if (store.getOrders().length === 0) {
-      store.createOrder({
-        customer: "John Doe (john@example.com)",
-        total: 35.98,
-        status: "PENDING",
-        items: [
-          { id: "oi1", productId: "p1", quantity: 1, price: 15.99 },
-          { id: "oi2", productId: "p4", quantity: 1, price: 19.99 }
-        ]
-      });
-    }
-    setOrders([...store.getOrders()]);
+    loadOrders();
   }, []);
 
-  const handleStatusChange = (id: string, status: Order['status']) => {
-    store.updateOrderStatus(id, status);
-    setOrders([...store.getOrders()]);
+  const handleStatusChange = async (id: string, status: string) => {
+    await updateOrderStatus(id, status);
+    loadOrders();
   };
 
   const getStatusStyle = (status: Order['status']) => {

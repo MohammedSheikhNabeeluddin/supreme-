@@ -12,8 +12,9 @@ import {
   Menu,
   X
 } from "lucide-react";
-import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { isAdmin, logout } from "@/lib/auth-client";
 
 export default function AdminLayout({
   children,
@@ -21,7 +22,37 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
   const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const isAuth = await isAdmin();
+      setAuthenticated(isAuth);
+      if (!isAuth && pathname !== "/admin/login") {
+        router.push("/admin/login");
+      }
+    };
+    checkAuth();
+  }, [pathname, router]);
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/admin/login");
+  };
+
+  if (pathname === "/admin/login") {
+    return <>{children}</>;
+  }
+
+  if (authenticated === null) {
+    return <div className="flex min-h-screen items-center justify-center">Loading...</div>;
+  }
+
+  if (authenticated === false) {
+    return null;
+  }
 
   const navItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -71,7 +102,10 @@ export default function AdminLayout({
         </nav>
 
         <div className="p-4 border-t border-slate-700">
-          <button className="flex items-center gap-4 p-3 w-full text-slate-400 hover:text-white transition-colors">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-4 p-3 w-full text-slate-400 hover:text-white transition-colors"
+          >
             <LogOut size={20} />
             {isSidebarOpen && <span className="font-medium">Sign Out</span>}
           </button>

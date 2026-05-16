@@ -1,17 +1,35 @@
 "use client";
 
-import { use, useState } from "react";
-import { store } from "@/lib/store";
-import { Star, Truck, ShieldCheck, RotateCcw } from "lucide-react";
+import { use, useState, useEffect } from "react";
+import { Star, Truck, ShieldCheck, RotateCcw, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { useCart } from "@/context/CartContext";
+import { getProductById } from "@/lib/actions-client";
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { addToCart } = useCart();
   const { id } = use(params);
-  const product = store.getProductById(id);
+  const [product, setProduct] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+
+  useEffect(() => {
+    const load = async () => {
+      const p = await getProductById(id);
+      setProduct(p);
+      setLoading(false);
+    };
+    load();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
 
   if (!product) {
     notFound();
@@ -21,6 +39,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const discountedPrice = hasDiscount
     ? product.price * (1 - product.discount! / 100)
     : product.price;
+
+  const images = JSON.parse(product.images);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -35,7 +55,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         <div className="lg:col-span-5">
           <div className="rounded-lg border bg-white p-4">
             <img
-              src={product.images[0]}
+              src={images[0]}
               alt={product.name}
               className="h-auto w-full object-contain max-h-[500px]"
             />

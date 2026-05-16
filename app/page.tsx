@@ -6,28 +6,26 @@ import { store } from "@/lib/store";
 import { Star } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useCart } from "@/context/CartContext";
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
+import { getProducts, seed } from "@/lib/actions-client";
 
 function ProductList() {
   const { addToCart } = useCart();
   const searchParams = useSearchParams();
   const categoryId = searchParams.get("category");
   const search = searchParams.get("search");
+  const [products, setProducts] = useState<any[]>([]);
 
-  const products = store.getProducts();
-  let filteredProducts = products;
+  useEffect(() => {
+    const load = async () => {
+      await seed();
+      const p = await getProducts(categoryId || undefined, search || undefined);
+      setProducts(p);
+    };
+    load();
+  }, [categoryId, search]);
 
-  if (categoryId) {
-    filteredProducts = filteredProducts.filter(p => p.categoryId === categoryId);
-  }
-
-  if (search) {
-    const query = search.toLowerCase();
-    filteredProducts = filteredProducts.filter(p =>
-      p.name.toLowerCase().includes(query) ||
-      p.description.toLowerCase().includes(query)
-    );
-  }
+  const filteredProducts = products;
 
   return (
     <>
@@ -43,11 +41,12 @@ function ProductList() {
             ? product.price * (1 - product.discount! / 100)
             : product.price;
 
+          const images = JSON.parse(product.images);
           return (
             <div key={product.id} className="group flex flex-col overflow-hidden rounded-lg border bg-white transition-shadow hover:shadow-lg">
               <Link href={`/product/${product.id}`} className="relative h-64 w-full bg-gray-100">
                 <img
-                  src={product.images[0]}
+                  src={images[0]}
                   alt={product.name}
                   className="h-full w-full object-contain p-4 transition-transform group-hover:scale-105"
                 />
