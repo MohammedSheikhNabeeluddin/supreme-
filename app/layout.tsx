@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { CartProvider } from "@/context/CartContext";
+import { Providers } from "@/components/Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,16 +30,19 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-gray-100">
-        <CartProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <footer className="bg-[#232f3e] py-8 text-center text-white">
-            <div className="container mx-auto px-4">
-              <p>&copy; 2025 BookStation. All rights reserved.</p>
-            </div>
-          </footer>
-        </CartProvider>
+      <body className="min-h-full flex flex-col bg-gray-50">
+        <Providers>
+          <CartProvider>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <footer className="bg-[#232f3e] py-12 text-center text-white">
+              <div className="container mx-auto px-4">
+                <p className="font-bold text-lg mb-2 italic text-[#ff9900]">BookStation</p>
+                <p className="text-gray-400 text-sm">&copy; 2025 BookStation. All rights reserved.</p>
+              </div>
+            </footer>
+          </CartProvider>
+        </Providers>
       </body>
     </html>
   );

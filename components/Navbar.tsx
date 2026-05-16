@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Search, ShoppingCart, BookOpen, Menu, User } from "lucide-react";
+import { Search, ShoppingCart, BookOpen, Menu } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
+import AuthButton from "./AuthButton";
 
 export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -50,10 +51,7 @@ export default function Navbar() {
           <Link href="/admin/products" className="hidden text-sm font-medium hover:text-[#ff9900] md:block">
             Admin
           </Link>
-          <Link href="/account" className="flex flex-col">
-            <span className="text-[10px]">Hello, Sign in</span>
-            <span className="text-sm font-bold">Account</span>
-          </Link>
+          <AuthButton />
           <Link href="/cart" className="relative flex items-center gap-1">
             <ShoppingCart className="h-8 w-8" />
             <span className="absolute -top-1 right-8 flex h-5 w-5 items-center justify-center rounded-full bg-[#ff9900] text-xs font-bold text-black">
