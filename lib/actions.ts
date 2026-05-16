@@ -24,6 +24,7 @@ export async function seed() {
           stock: prod.stock,
           images: JSON.stringify(prod.images),
           categoryId: prod.categoryId,
+          tags: prod.tags,
         },
       });
     }
@@ -61,6 +62,7 @@ export async function addProduct(data: any) {
     data: {
       ...data,
       images: JSON.stringify(data.images),
+      tags: data.tags,
     },
   });
 }
@@ -71,6 +73,7 @@ export async function updateProduct(id: string, data: any) {
     data: {
       ...data,
       images: data.images ? JSON.stringify(data.images) : undefined,
+      tags: data.tags,
     },
   });
 }

@@ -139,12 +139,15 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
             <div className="space-y-3">
               <button
-                onClick={() => addToCart(product, quantity)}
-                className="w-full rounded-full bg-[#ffd814] py-2 text-sm font-medium hover:bg-[#f7ca00]"
+                onClick={() => {
+                  addToCart(product, quantity);
+                  alert("Added to cart!");
+                }}
+                className="w-full rounded-full bg-[#ffd814] py-3 text-sm font-bold shadow hover:bg-[#f7ca00] transition-colors"
               >
                 Add to Cart
               </button>
-              <button className="w-full rounded-full bg-[#ffa41c] py-2 text-sm font-medium hover:bg-[#fa8900]">
+              <button className="w-full rounded-full bg-[#ffa41c] py-3 text-sm font-bold shadow hover:bg-[#fa8900] transition-colors">
                 Buy Now
               </button>
             </div>

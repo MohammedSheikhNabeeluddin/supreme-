@@ -81,8 +81,11 @@ function ProductList() {
                   <p className="mt-1 text-xs text-gray-500">FREE delivery Tomorrow</p>
 
                   <button
-                    onClick={() => addToCart(product)}
-                    className="mt-4 w-full rounded-full bg-[#ffd814] py-2 text-sm font-medium hover:bg-[#f7ca00]"
+                    onClick={() => {
+                      addToCart(product);
+                      alert("Added to cart!");
+                    }}
+                    className="mt-4 w-full rounded-full bg-[#ffd814] py-2 text-sm font-bold shadow hover:bg-[#f7ca00] transition-colors"
                   >
                     Add to Cart
                   </button>

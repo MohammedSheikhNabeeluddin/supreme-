@@ -17,6 +17,7 @@ model Product {
   discount    Float?   // Percentage discount
   stock       Int      @default(0)
   images      String   // JSON array of image URLs
+  tags        String?
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
   createdAt   DateTime @default(now())

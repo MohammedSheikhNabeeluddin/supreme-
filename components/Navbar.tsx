@@ -63,16 +63,20 @@ export default function Navbar() {
       </div>
 
       {/* Sub-nav */}
-      <div className="bg-[#232f3e] px-4 py-2">
-        <div className="container mx-auto flex items-center gap-6 text-sm font-medium">
+      <div className="bg-[#232f3e] px-4 py-2 overflow-x-auto">
+        <div className="container mx-auto flex items-center gap-6 text-sm font-medium whitespace-nowrap">
           <button className="flex items-center gap-1 hover:outline hover:outline-1 hover:outline-white p-1">
             <Menu className="h-5 w-5" /> All
           </button>
-          <Link href="/?category=1" className="hover:outline hover:outline-1 hover:outline-white p-1">Fiction</Link>
-          <Link href="/?category=2" className="hover:outline hover:outline-1 hover:outline-white p-1">Textbooks</Link>
-          <Link href="/?category=3" className="hover:outline hover:outline-1 hover:outline-white p-1">Pens</Link>
-          <Link href="/?category=4" className="hover:outline hover:outline-1 hover:outline-white p-1">Notebooks</Link>
-          <Link href="/?category=5" className="hover:outline hover:outline-1 hover:outline-white p-1">Stationery</Link>
+          <Link href="/?category=cat-bio" className="hover:outline hover:outline-1 hover:outline-white p-1">Biographies</Link>
+          <Link href="/?category=cat-cbse" className="hover:outline hover:outline-1 hover:outline-white p-1">CBSE Books</Link>
+          <Link href="/?category=cat-coll" className="hover:outline hover:outline-1 hover:outline-white p-1">College Books</Link>
+          <Link href="/?category=cat-comp" className="hover:outline hover:outline-1 hover:outline-white p-1">Competitive Exam</Link>
+          <Link href="/?category=cat-kids" className="hover:outline hover:outline-1 hover:outline-white p-1">Kids Books</Link>
+          <Link href="/?category=cat-novels" className="hover:outline hover:outline-1 hover:outline-white p-1">Novels</Link>
+          <Link href="/?category=cat-rel" className="hover:outline hover:outline-1 hover:outline-white p-1">Religious</Link>
+          <Link href="/?category=cat-story" className="hover:outline hover:outline-1 hover:outline-white p-1">Story Books</Link>
+          <Link href="/?category=cat-stat" className="hover:outline hover:outline-1 hover:outline-white p-1 font-bold text-[#ff9900]">Stationery</Link>
         </div>
       </div>
     </header>

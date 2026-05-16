@@ -1,6 +1,7 @@
 export type Category = {
   id: string;
   name: string;
+  parent?: 'Book' | 'Stationery';
 };
 
 export type Product = {
@@ -12,6 +13,7 @@ export type Product = {
   stock: number;
   images: any; // String in DB, array in memory
   categoryId: string;
+  tags?: string;
 };
 
 export type OrderItem = {
@@ -31,13 +33,19 @@ export type Order = {
   createdAt: string;
 };
 
-export const INITIAL_CATEGORIES: Category[] = [
-  { id: '1', name: 'Fiction' },
-  { id: '2', name: 'Textbooks' },
-  { id: '3', name: 'Pens' },
-  { id: '4', name: 'Notebooks' },
-  { id: '5', name: 'Stationery' },
+const CATEGORIES: Category[] = [
+  { id: 'cat-bio', name: 'Biographies', parent: 'Book' },
+  { id: 'cat-cbse', name: 'CBSE Books', parent: 'Book' },
+  { id: 'cat-coll', name: 'College Books', parent: 'Book' },
+  { id: 'cat-comp', name: 'Competitive Exam Books', parent: 'Book' },
+  { id: 'cat-kids', name: 'Kids Books', parent: 'Book' },
+  { id: 'cat-novels', name: 'Novels', parent: 'Book' },
+  { id: 'cat-rel', name: 'Religious Books', parent: 'Book' },
+  { id: 'cat-story', name: 'Story Books', parent: 'Book' },
+  { id: 'cat-stat', name: 'Stationery', parent: 'Stationery' },
 ];
+
+export const INITIAL_CATEGORIES: Category[] = CATEGORIES.sort((a, b) => a.name.localeCompare(b.name));
 
 export const INITIAL_PRODUCTS: Product[] = [
   {
@@ -48,16 +56,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     discount: 10,
     stock: 50,
     images: ['https://images.unsplash.com/photo-1543004218-ee14110497f9?auto=format&fit=crop&w=400&h=500&q=80'],
-    categoryId: '1',
-  },
-  {
-    id: 'p2',
-    name: 'Calculus: Early Transcendentals',
-    description: 'A comprehensive guide to calculus.',
-    price: 120.0,
-    stock: 20,
-    images: ['https://images.unsplash.com/photo-1544640808-32ca72ac7f67?auto=format&fit=crop&w=400&h=500&q=80'],
-    categoryId: '2',
+    categoryId: 'cat-novels',
+    tags: 'classic, fiction, f scott fitzgerald',
   },
   {
     id: 'p3',
@@ -67,15 +67,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     discount: 5,
     stock: 30,
     images: ['https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?auto=format&fit=crop&w=400&h=500&q=80'],
-    categoryId: '3',
-  },
-  {
-    id: 'p4',
-    name: 'Moleskine Classic Notebook',
-    description: 'Premium quality paper for your thoughts.',
-    price: 19.99,
-    stock: 100,
-    images: ['https://images.unsplash.com/photo-1531346878377-a5be20888e57?auto=format&fit=crop&w=400&h=500&q=80'],
-    categoryId: '4',
+    categoryId: 'cat-stat',
+    tags: 'pen, luxury, office, writing',
   },
 ];

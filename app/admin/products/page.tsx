@@ -27,7 +27,8 @@ export default function AdminProductsPage() {
     discount: "",
     stock: "",
     categoryId: "",
-    imageUrl: ""
+    imageUrl: "",
+    tags: ""
   });
 
   const loadData = async () => {
@@ -56,7 +57,8 @@ export default function AdminProductsPage() {
       discount: (product.discount || "").toString(),
       stock: product.stock.toString(),
       categoryId: product.categoryId,
-      imageUrl: images[0] || ""
+      imageUrl: images[0] || "",
+      tags: product.tags || ""
     });
     setIsModalOpen(true);
   };
@@ -77,7 +79,8 @@ export default function AdminProductsPage() {
       discount: formData.discount ? parseFloat(formData.discount) : null,
       stock: parseInt(formData.stock),
       categoryId: formData.categoryId,
-      images: [formData.imageUrl || "https://images.unsplash.com/photo-1544640808-32ca72ac7f67?w=400"]
+      images: [formData.imageUrl || "https://images.unsplash.com/photo-1544640808-32ca72ac7f67?w=400"],
+      tags: formData.tags
     };
 
     if (editingProduct) {
@@ -120,7 +123,8 @@ export default function AdminProductsPage() {
               discount: "",
               stock: "",
               categoryId: categories[0]?.id || "",
-              imageUrl: ""
+              imageUrl: "",
+              tags: ""
             });
             setIsModalOpen(true);
           }}
@@ -268,6 +272,16 @@ export default function AdminProductsPage() {
                     onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
                     className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                     placeholder="https://..."
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Tags (comma separated)</label>
+                  <input
+                    type="text"
+                    value={formData.tags}
+                    onChange={(e) => setFormData({...formData, tags: e.target.value})}
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    placeholder="tag1, tag2..."
                   />
                 </div>
               </div>
