@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 
-const ADMIN_PASSWORD = "abidfaridsupreme@786"; // In a real app, use environment variables
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "abidfaridsupreme@786";
 
 export async function login(password: string) {
   if (password === ADMIN_PASSWORD) {
