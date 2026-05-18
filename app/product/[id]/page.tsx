@@ -155,7 +155,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             <div className="mt-6 space-y-3 border-t pt-4 text-xs">
               <div className="flex items-center gap-2">
                 <Truck className="h-4 w-4 text-gray-500" />
-                <span>Ships from BookStation</span>
+                <span>Ships from Supreme Book Depot</span>
               </div>
               <div className="flex items-center gap-2">
                 <ShieldCheck className="h-4 w-4 text-gray-500" />

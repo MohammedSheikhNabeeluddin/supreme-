@@ -16,6 +16,7 @@ export default function AdminProductsPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any | null>(null);
 
@@ -32,15 +33,20 @@ export default function AdminProductsPage() {
   });
 
   const loadData = async () => {
-    setLoading(true);
-    await seed(); // Ensure data exists for demo
-    const [p, c] = await Promise.all([getProducts(), getCategories()]);
-    setProducts(p);
-    setCategories(c);
-    if (c.length > 0 && !formData.categoryId) {
-      setFormData(prev => ({ ...prev, categoryId: c[0].id }));
+    try {
+      setLoading(true);
+      await seed(); // Ensure data exists for demo
+      const [p, c] = await Promise.all([getProducts(), getCategories()]);
+      setProducts(p);
+      setCategories(c);
+      if (c.length > 0 && !formData.categoryId) {
+        setFormData(prev => ({ ...prev, categoryId: c[0].id }));
+      }
+    } catch (error) {
+      console.error("Failed to load products:", error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -94,6 +100,12 @@ export default function AdminProductsPage() {
     loadData();
   };
 
+  const filteredProducts = products.filter(p =>
+    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    p.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (p.tags && p.tags.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -110,6 +122,8 @@ export default function AdminProductsPage() {
           <input
             type="text"
             placeholder="Search products..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
@@ -134,8 +148,8 @@ export default function AdminProductsPage() {
         </button>
       </div>
 
-      <div className="bg-white border rounded-lg overflow-hidden shadow-sm">
-        <table className="w-full text-left border-collapse">
+      <div className="bg-white border rounded-lg overflow-x-auto shadow-sm">
+        <table className="w-full text-left border-collapse min-w-[800px]">
           <thead>
             <tr className="bg-gray-50 border-b">
               <th className="p-4 font-semibold text-gray-600 text-sm">Product</th>
@@ -147,8 +161,13 @@ export default function AdminProductsPage() {
             </tr>
           </thead>
           <tbody className="divide-y text-sm">
-            {products.map((product) => {
-              const images = JSON.parse(product.images);
+            {filteredProducts.map((product) => {
+              let images = [];
+              try {
+                images = JSON.parse(product.images);
+              } catch {
+                images = ["https://images.unsplash.com/photo-1544640808-32ca72ac7f67?w=400"];
+              }
               return (
                 <tr key={product.id} className="hover:bg-gray-50 transition-colors">
                   <td className="p-4">

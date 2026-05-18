@@ -9,7 +9,9 @@ import {
   getOrders as dbGetOrders,
   createOrder as dbCreateOrder,
   updateOrderStatus as dbUpdateOrderStatus,
-  seed as dbSeed
+  seed as dbSeed,
+  addCategory as dbAddCategory,
+  deleteCategory as dbDeleteCategory
 } from "./actions";
 
 export async function getProducts(categoryId?: string, search?: string) {
@@ -50,4 +52,12 @@ export async function updateOrderStatus(id: string, status: string) {
 
 export async function seed() {
   return await dbSeed();
+}
+
+export async function addCategory(name: string) {
+  return await dbAddCategory(name);
+}
+
+export async function deleteCategory(id: string) {
+  return await dbDeleteCategory(id);
 }

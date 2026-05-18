@@ -27,7 +27,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 text-xl font-bold">
           <BookOpen className="h-8 w-8 text-[#ff9900]" />
-          <span className="hidden sm:inline">BookStation</span>
+          <span className="hidden sm:inline">Supreme Book Depot</span>
         </Link>
 
         {/* Search Bar */}
