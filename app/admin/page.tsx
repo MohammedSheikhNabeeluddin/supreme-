@@ -38,7 +38,7 @@ export default function AdminDashboard() {
 
   const totalRevenue = orders.reduce((sum: number, o: any) => sum + o.total, 0);
   const lowStockProducts = products.filter((p: any) => p.stock > 0 && p.stock <= 5);
-  const recentOrders = [...orders].slice(0, 5);
+  const recentOrders = orders.slice(0, 5);
 
   const stats = [
     {
