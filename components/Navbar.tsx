@@ -48,9 +48,6 @@ export default function Navbar() {
 
         {/* Right Nav */}
         <nav className="flex items-center gap-6">
-          <Link href="/admin/products" className="hidden text-sm font-medium hover:text-[#ff9900] md:block">
-            Admin
-          </Link>
           <AuthButton />
           <Link href="/cart" className="relative flex items-center gap-1">
             <ShoppingCart className="h-8 w-8" />
