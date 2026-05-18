@@ -37,8 +37,11 @@ export default function AdminDashboard() {
   }, []);
 
   const totalRevenue = orders.reduce((sum: number, o: any) => sum + o.total, 0);
-  const lowStockProducts = products.filter((p: any) => p.stock > 0 && p.stock <= 5);
-  const recentOrders = orders.slice(0, 5);
+  const LOW_STOCK_THRESHOLD = 5;
+  const RECENT_ORDERS_LIMIT = 5;
+
+  const lowStockProducts = products.filter((p: any) => p.stock > 0 && p.stock <= LOW_STOCK_THRESHOLD);
+  const recentOrders = orders.slice(0, RECENT_ORDERS_LIMIT);
 
   const stats = [
     {
