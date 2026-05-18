@@ -160,12 +160,20 @@ export default function AdminLayout({
           </div>
           <div className="flex items-center gap-4">
             <div className="text-right hidden sm:block">
-              <p className="text-sm font-medium">Store Owner</p>
-              <p className="text-xs text-gray-500">owner@bookstation.com</p>
+              <p className="text-sm font-medium">{session.user?.name || "Admin"}</p>
+              <p className="text-xs text-gray-500">{session.user?.email}</p>
             </div>
-            <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
-              SO
-            </div>
+            {session.user?.image ? (
+              <img
+                src={session.user.image}
+                alt={session.user.name || "Admin"}
+                className="h-10 w-10 rounded-full border-2 border-blue-600"
+              />
+            ) : (
+              <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                {session.user?.name?.charAt(0)?.toUpperCase() || "A"}
+              </div>
+            )}
           </div>
         </header>
 
