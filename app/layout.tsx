@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BookStation | Premium Books & Stationery",
+  title: "Supreme Book Depot | Premium Books & Stationery",
   description: "Your one-stop shop for books and stationery items.",
 };
 
@@ -37,8 +37,8 @@ export default function RootLayout({
             <main className="flex-1">{children}</main>
             <footer className="bg-[#232f3e] py-12 text-center text-white">
               <div className="container mx-auto px-4">
-                <p className="font-bold text-lg mb-2 italic text-[#ff9900]">BookStation</p>
-                <p className="text-gray-400 text-sm">&copy; 2025 BookStation. All rights reserved.</p>
+                <p className="font-bold text-lg mb-2 italic text-[#ff9900]">Supreme Book Depot</p>
+                <p className="text-gray-400 text-sm">&copy; 2025 Supreme Book Depot. All rights reserved.</p>
               </div>
             </footer>
           </CartProvider>

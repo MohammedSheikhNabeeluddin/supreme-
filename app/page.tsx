@@ -15,17 +15,29 @@ function ProductList() {
   const categoryId = searchParams.get("category");
   const search = searchParams.get("search");
   const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
-      await seed();
-      const p = await getProducts(categoryId || undefined, search || undefined);
-      setProducts(p);
+      try {
+        setLoading(true);
+        await seed();
+        const p = await getProducts(categoryId || undefined, search || undefined);
+        setProducts(p);
+      } catch (error) {
+        console.error("Failed to load products:", error);
+      } finally {
+        setLoading(false);
+      }
     };
     load();
   }, [categoryId, search]);
 
   const filteredProducts = products;
+
+  if (loading) {
+    return <div className="text-center py-20 text-gray-500">Loading products...</div>;
+  }
 
   return (
     <>
@@ -41,7 +53,12 @@ function ProductList() {
             ? product.price * (1 - product.discount! / 100)
             : product.price;
 
-          const images = JSON.parse(product.images);
+          let images = [];
+          try {
+            images = JSON.parse(product.images);
+          } catch {
+            images = ["https://images.unsplash.com/photo-1544640808-32ca72ac7f67?w=400"];
+          }
           return (
             <div key={product.id} className="group flex flex-col overflow-hidden rounded-lg border bg-white transition-shadow hover:shadow-lg">
               <Link href={`/product/${product.id}`} className="relative h-64 w-full bg-gray-100">

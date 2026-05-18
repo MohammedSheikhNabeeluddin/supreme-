@@ -38,7 +38,8 @@ export async function getProducts(categoryId?: string, search?: string) {
       ...(search ? {
         OR: [
           { name: { contains: search } },
-          { description: { contains: search } }
+          { description: { contains: search } },
+          { tags: { contains: search } }
         ]
       } : {}),
     },
@@ -55,6 +56,18 @@ export async function getProductById(id: string) {
 
 export async function getCategories() {
   return await prisma.category.findMany();
+}
+
+export async function addCategory(name: string) {
+  return await prisma.category.create({
+    data: { name }
+  });
+}
+
+export async function deleteCategory(id: string) {
+  return await prisma.category.delete({
+    where: { id }
+  });
 }
 
 export async function addProduct(data: any) {
